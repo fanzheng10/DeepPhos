@@ -12,6 +12,7 @@ from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 
+from tensorflow import keras
 from keras.layers import Dense, Activation, Flatten, Dropout, Reshape
 from keras.layers import Conv1D,Conv2D, MaxPooling2D
 from keras.models import Sequential,Model
@@ -21,6 +22,8 @@ from keras.optimizers import Adam,SGD
 from keras.layers.normalization import BatchNormalization
 from keras.regularizers import l2
 import copy
+
+import tensorflow as tf
 
 def predict_for_deepphos(train_file_name,sites,predictFrame = 'general',
                          hierarchy=None, kinase=None):
@@ -66,11 +69,17 @@ def predict_for_deepphos(train_file_name,sites,predictFrame = 'general',
         model_weight = './models/model_{:s}_{:s}.h5'.format(hierarchy, kinase)
 #     print model_weight
     model.load_weights(model_weight)
-    predictions_t = model.predict([X_test1, X_test2, X_test3])
-    results_ST = np.column_stack((ids, position,predictions_t[:, 1]))
+    extractor = Model(inputs=model.inputs, outputs=[model.layers[-3].output, model.layers[-1].output]) # last dense layer and the final 1/0 prediction
+    predictions_t = extractor.predict([X_test1, X_test2, X_test3])
+
+    # save the final dense layer (32 dim) as a numpy file
+
+    np.save(outputfile + "_embedding", predictions_t[0])
+    results_ST = np.column_stack((ids, position,predictions_t[1][:, 1]))
+    #
 
     result = pd.DataFrame(results_ST)
-    result.to_csv(outputfile + "prediction_phosphorylation.txt", index=False, header=None, sep='\t',
+    result.to_csv(outputfile + "_prediction_phosphorylation.txt", index=False, header=None, sep='\t',
                   quoting=csv.QUOTE_NONNUMERIC)
 if __name__ == '__main__':
     train_file_name = 'test data.csv'

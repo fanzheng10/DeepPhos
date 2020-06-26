@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="grenache.ucsd.edu">
+    <serverData>
+      <paths name="grenache.ucsd.edu">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/cellar/users/f6zheng/work_2020/phoscape/DeepPhos" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

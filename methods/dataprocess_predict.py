@@ -16,7 +16,7 @@ def getMatrixInput(positive_position_file_name,sites, window_size=51, empty_aa =
     # all_label = []
 
     short_seqs = []
-    half_len = (window_size - 1) / 2
+    half_len = int((window_size - 1) / 2)
 
     with open(positive_position_file_name, 'r') as rf:
         reader = csv.reader(rf)
